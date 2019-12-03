@@ -1,0 +1,12 @@
+dj-database-url==0.4.2
+Django==2.1.5
+gunicorn==19.7.1
+psycopg2==2.7.4
+whitenoise==3.3.0
+scikit-learn
+matplotlib
+numpy
+pandas
+profanity-check
+mysqlclient
+seaborn

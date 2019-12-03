@@ -1,0 +1,51 @@
+<html> 
+    <head>
+      <title>RapidML</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <script src="http://code.jquery.com/jquery-latest.js"></script>
+      <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <body>
+      <center>
+        <h2>RapidML</h2>
+      </center>
+<form method="post" enctype="multipart/form-data" action="/home/">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-warning">Home</button>
+      </form>      <ul class="nav nav-tabs">
+        <li><a href="/preprocess">Preprocessing</a></li>
+        <li class="active"><a href="/train">Model Training</a></li>
+        <li><a href="/tune">Hyper Parameter Tuning</a></li>
+        <li><a href="/visualise">Visualisation</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/deploy">Download/Deploy</a></li>	
+	    </ul>
+      <div><br/><br/>
+        <form method="post" action="/train/trainmodel/">
+          {% csrf_token %}
+          Select you model:
+          <select name="model">
+            {% for i in models %}   
+              <option value="{{i}}">{{i}}</option>
+            {% endfor %}
+          </select><br/><br/>
+          Enter test split percentage: <input type="number" min ='0' max='100' name="split" required/><br/><br/>
+          <input class="btn btn-info" type="submit"/>
+        </form>
+      </div>
+      {% if type == 'classification' %}
+      <div>
+        <b>Results:</b><br/>
+        <b>Train F1 Score: </b>{{train_f1}}<br/>
+        <b>Test F1 Score: </b>{{test_f1}}<br/><br/><br/>
+        <b>Classification Report: </b>{{clf_report | safe}}<br/><br/>
+        <b>Confusion Matrix: </b>
+        {% load static %}
+        <img src = {% static 'images/output.png' %}/>
+      </div>
+      {% elif type == 'regression' %}
+        <b>Results:</b><br/>
+        <b>Train R2 Score: </b>{{train_f1}}<br/>
+        <b>Test R2 Score: </b>{{test_f1}}<br/><br/><br/>
+      {% endif %}
+    </body>
+  </html>

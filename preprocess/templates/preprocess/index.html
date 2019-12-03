@@ -1,0 +1,155 @@
+<html> 
+    <head>
+      <title>RapidML</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <script src="http://code.jquery.com/jquery-latest.js"></script>
+      <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+      <script>
+        jQuery(document).delegate('a.add-record', 'click', function(e) {
+            e.preventDefault();    
+            var content = jQuery('#sample_table tr'),
+            size = jQuery('#tbl_posts >tbody >tr').length + 1,
+            element = null,    
+            element = content.clone();
+            element.attr('id', 'rec-'+size);
+            element.find('.drop').attr('name', 'drop'+size);
+            element.find('.categorical').attr('name', 'categorical'+size);
+            element.find('.delete-record').attr('data-id', size);
+            element.appendTo('#tbl_posts_body');
+            element.find('.sn').html(size);
+          });
+        
+        jQuery(document).delegate('a.delete-record', 'click', function(e) {
+            e.preventDefault();    
+            var didConfirm = confirm("Are you sure You want to delete");
+            if (didConfirm == true) {
+              var id = jQuery(this).attr('data-id');
+              var targetDiv = jQuery(this).attr('targetDiv');
+              jQuery('#rec-' + id).remove();
+              
+            $('#tbl_posts_body tr').each(function(index) {
+              $(this).find('span.sn').html(index+1);
+            });
+            return true;
+          } else {
+            return false;
+          }
+        });
+        
+        jQuery(document).delegate('td.select-option', 'change', function(e) {
+            e.preventDefault();
+            var selectValue = $(this).find('select');
+            var textBox = $(this).find('input')
+            if(selectValue['0'].value == '3'){
+                textBox['0'].style.display = "block"
+            }
+            else {
+                textBox['0'].style.display = "none";
+            }
+        });
+        </script>
+    </head>
+    <body>
+      <center>
+        <h2>RapidML</h2>
+      </center>
+<form method="post" enctype="multipart/form-data" action="/home/">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-warning">Home</button>
+      </form>      <ul class="nav nav-tabs">
+        <li class="active"><a href="/preprocess">Preprocessing</a></li>
+        <li><a href="/train">Model Training</a></li>
+        <li><a href="/tune">Hyper Parameter Tuning</a></li>
+        <li><a href="/visualise">Visualisation</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/deploy">Download/Deploy</a></li>	
+	    </ul>
+    <form method="post" >
+        {% csrf_token %}
+        <table class="table table-bordered" id="tbl_posts">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Column</th>
+            <th>Missing Value</th>
+            <th>Replace Missing With</th>
+            <th>Drop Columns?</th>
+            <th>Is Categorical?</th>
+          </tr>
+        </thead>
+        <tbody id="tbl_posts_body">
+          <tr id="rec-1">
+            <td><span class="sn">1</span></td>
+            <td class="ui-widget">
+              <select name="feature">
+                <option value="0" selected>Select a feature</option>
+                  {% for header in headers %}
+                    <option value="{{header}}">{{header}}</option>
+                  {% endfor %}
+              </select>
+            </td>
+            <td class="ui-widget select-option"><select class="missing" name="missing">
+                <option value="0" selected>Select One</option>
+                <option value="1">?</option>
+                <option value="2">NaN</option>
+                <option value="3">Custom Input</option>
+              </select>
+              <input type="text" name="missing_custom" id="missing_custom" style='display:none;'/>
+            </td>  
+            <td class="ui-widget select-option"><select class="replace" name="replace">
+                <option value="0" selected>Select One</option>
+                <option value="1">Mean</option>
+                <option value="2">Median</option>
+                <option value="3">Custom Input</option>
+              </select>
+              <input type="text" name="replace_custom" class='color' id="color" style='display:none;'/>
+            </td>
+            <td class="ui-widget"><center><input type="radio" name="drop" value="1"/>Yes&nbsp;&nbsp;&nbsp;<input type="radio" name="drop" value="2" checked/>No</center></td>
+            <td class="ui-widget"><center><input class="categorical" type="radio" name="categorical" value="1"/>Yes&nbsp;&nbsp;&nbsp;<input type="radio" class="categorical" name="categorical" value="2" checked/>No</center></td>
+            <td><a class="btn btn-primary delete-record" data-id="1"><i class="glyphicon glyphicon-trash"></i></a></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="well clearfix">
+            <a class="btn btn-primary pull-right add-record" data-added="0"><i class="glyphicon glyphicon-plus"></i> Add Row</a>
+      </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Preprocess" onclick="javascript: form.action='dopreprocess';" class="btn btn-info"/>
+    </form>
+  
+  <div style="display:none;">
+    <table id="sample_table">
+      <tr id="">
+        <td><span class="sn"></span></td>
+            <td class="ui-widget">
+              <select name="feature" class"feature">
+                <option value="0" selected>Select a feature</option>
+                  {% for header in headers %}
+                    <option value="{{header}}">{{header}}</option>
+                  {% endfor %}
+              </select>
+            </td>
+            <td class="ui-widget select-option"><select class="missing" name="missing">
+                <option value="0" selected>Select One</option>
+                <option value="1">?</option>
+                <option value="2">NaN</option>
+                <option value="3">Custom Input</option>
+              </select>
+              <input type="text" name="missing_custom" id="missing_custom" style='display:none;'/>
+            </td>        
+            <td class="ui-widget select-option"><select class="replace" name="replace">
+                <option value="0" selected>Select One</option>
+                <option value="1">Mean</option>
+                <option value="2">Median</option>
+                <option value="3">Custom Input</option>
+              </select>
+              <input type="text" name="replace_custom" id="color" style='display:none;'/>
+            </td>
+            <td class="ui-widget"><center><input class="drop" type="radio" name="" value="1"/>Yes&nbsp;&nbsp;&nbsp;<input type="radio" class="drop" name="" value="2" checked/>No</center></td>
+            <td class="ui-widget"><center><input class="categorical" type="radio" name="" value="1"/>Yes&nbsp;&nbsp;&nbsp;<input type="radio" class="categorical" name="" value="2" checked/>No</center></td>
+            <td><a class="btn btn-primary delete-record" data-id="0"><i class="glyphicon glyphicon-trash"></i></a></td>
+      </tr>
+   </table>
+ </div>
+
+    </body>
+  </html>

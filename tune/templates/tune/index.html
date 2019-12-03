@@ -1,0 +1,63 @@
+<html> 
+    <head>
+      <title>RapidML</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <script src="http://code.jquery.com/jquery-latest.js"></script>
+      <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <body>
+      <center>
+        <h2> RapidML </h2>
+      </center>
+<form method="post" enctype="multipart/form-data" action="/home/">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-warning">Home</button>
+      </form>      <ul class="nav nav-tabs">
+        <li><a href="/preprocess">Preprocessing</a></li>
+        <li><a href="/train">Model Training</a></li>
+        <li class="active"><a href="/tune">Hyper Parameter Tuning</a></li>
+        <li><a href="/visualise">Visualisation</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/deploy">Download/Deploy</a></li>	
+	    </ul>
+      <div><br/><br/>
+        <form method="POST" action="/tune/tune">
+        {% csrf_token %}
+        {% if model == 'SVM' %}
+          Kernel: <select name="kernel">
+                    <option value="linear">Linear</option>
+                    <option value="rbf">RBF</option>
+                    <option value="sigmoid">Sigmoid</option>
+                    <option value="poly">Poly</option>
+                    <option value="precomputed">PreComputed</option> 
+                  </select>
+          C-Param:<input type="float" name="cparam"/>
+          Gamma: <input type="float" name="gamma"/>
+        {% elif model == 'KNN' %}
+          k: <input type="number" name="k"/>
+        {% elif model == 'Decision Tree' %}
+
+        {% elif model == 'Logistic Regression' %}
+          C-Param:<input type="number" name="cparam"/>
+          Iterations: <input type="number" name="iterations"/>
+        {% elif model == 'Linear Regression' %}
+
+        {% elif model == 'Lasso Regression' %}
+
+        {% elif model == 'Ridge Regression' %}
+
+        {% elif model == 'Bayesian Ridge Regression' %}
+
+        {% endif %}
+          <input type="submit" value="TUNE"/>
+        </form>
+        {% if type == 'classification' %}
+          <b>Train F1-Score:</b> {{train_f1}}<br/>
+          <b>Test F1-Score :</b> {{test_f1}}<br/><br/>
+          {{clf_report | safe}}
+        {% elif type == 'regression' %}
+          <b>Train R2-Score:</b> {{train_f1}}<br/>
+          <b>Test R2-Score :</b> {{test_f1}}<br/><br/>
+        {% endif %}
+      </div>
+    </body>
+  </html>

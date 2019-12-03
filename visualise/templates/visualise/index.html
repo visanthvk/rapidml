@@ -1,0 +1,38 @@
+<html> 
+    <head>
+      <title>RapidML</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <script src="http://code.jquery.com/jquery-latest.js"></script>
+      <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <body>
+      <center>
+        <h2> RapidML </h2>
+      </center>
+<form method="post" enctype="multipart/form-data" action="/home/">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-warning">Home</button>
+      </form>      <ul class="nav nav-tabs">
+        <li><a href="/preprocess">Preprocessing</a></li>
+        <li><a href="/train">Model Training</a></li>
+        <li><a href="/tune">Hyper Parameter Tuning</a></li>
+        <li class="active"><a href="/visualise">Visualisation</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/deploy">Download/Deploy</a></li>	
+	    </ul>
+      Data Description:
+       <div>
+        {{ desc|safe }}
+      <div>
+      Head:
+      <div>
+        {{ head|safe }}
+      <div>
+      {% load static %}
+      <div>
+        {% for i in box_plot_images %}
+          <img src = {% static i %} />
+        {% endfor %}
+        <img src = {% static 'images/graph.png' %}/>
+      </div>
+      </body>
+  </html>
